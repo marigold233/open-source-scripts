@@ -5,5 +5,4 @@ chmod u+x *.sh
 ./batch_port_test.sh 22
 ```
 
-## TODO
-使用单个ip探测支持
+
