@@ -43,7 +43,8 @@ mian() {
             --with-http_realip_module \
             --with-http_sub_module \
             --with-stream
-        make
+        cores=$((`grep -c ^processor /proc/cpuinfo` - 1))
+        make -j${cores}
         make install
         tar -zcf "/nginx-bin-${nginx_version}.tar.gz" -C "$(dirname $nginx_prefix)" "$(basename $nginx_prefix)"
     } >&2
