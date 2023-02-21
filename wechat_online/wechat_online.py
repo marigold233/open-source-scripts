@@ -42,7 +42,9 @@ def mouse_move():
         X, Y = random_x, random_y
         return True
     else:
-        print(f"不需要移动鼠标，原来的鼠标位置 x:{X}, y:{Y}, 现在的鼠标位置 x:{current_x}, y:{current_y}")
+        logger.info(
+            f"不需要移动鼠标，原来的鼠标位置 x:{X}, y:{Y}, 现在的鼠标位置 x:{current_x}, y:{current_y}"
+        )
         X, Y = current_x, current_y
 
 
@@ -57,7 +59,9 @@ def lock_screen():
     root.attributes("-fullscreen", True)
     root.attributes("-alpha", 0.90)
     root.bind_all("<Control-z>", lambda event: root.destroy())
-    photo = ImageTk.PhotoImage(file=r"D:\备份资料\个人资料\Python\Python小工具\wechat_online\lock.png")
+    photo = ImageTk.PhotoImage(
+        file=r"D:\备份资料\个人资料\Python\Python小工具\wechat_online\lock.png"
+    )
     tk.Label(root, image=photo).pack()
     # tk.Button(root, text="点击执行回调函数", command=root.quit).pack()
     # pass_input = tk.Text(root, width="40", height="3")
