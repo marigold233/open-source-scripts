@@ -6,6 +6,7 @@ from multiprocessing import Process
 import pyautogui
 import win32con
 import win32gui
+import win32api
 from loguru import logger
 from PIL import Image, ImageTk
 
@@ -16,12 +17,18 @@ def run_wechat():
     hwnd = win32gui.FindWindow(None, "企业微信")
     # https://blog.csdn.net/jr126/article/details/109647187
     # https://mhammond.github.io/pywin32/objects.html
+    # https://cloud.tencent.com/developer/article/1741061
     if hwnd != 0:
         win32gui.ShowWindow(hwnd, win32con.SW_SHOWNOACTIVATE)
     else:
         win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
         win32gui.ShowWindow(hwnd, win32con.SW_SHOWNOACTIVATE)
-    time.sleep(5)
+    left, top, right, bottom = win32gui.GetWindowRect(hwnd)
+    win32api.SetCursorPos([left + 34, top + 42])
+    win32api.mouse_event(
+        win32con.MOUSEEVENTF_LEFTUP | win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0
+    )
+    time.sleep(3)
     win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
 
 
@@ -31,12 +38,12 @@ def mouse_move():
     screenWidth, screenHeight = pyautogui.size()
     current_x, current_y = pyautogui.position()
     if (current_x == X and current_y == Y) or ((None, None) == (X, Y)):
-        logger.info(
-            f"开始随机移动鼠标, 原来的鼠标位置 x:{X}, y:{Y}, 现在的鼠标位置 x:{current_x}, y:{current_y}"
-        )
         random_x, random_y = (
             random.randint(0, pyautogui.size().width),
             random.randint(0, pyautogui.size().height),
+        )
+        logger.info(
+            f"开始随机移动鼠标, 原来的鼠标位置 x:{X}, y:{Y}, 现在的鼠标位置 x:{random_x}, y:{random_y}"
         )
         pyautogui.moveTo(random_x, random_y, 1)
         X, Y = random_x, random_y
@@ -46,6 +53,10 @@ def mouse_move():
             f"不需要移动鼠标，原来的鼠标位置 x:{X}, y:{Y}, 现在的鼠标位置 x:{current_x}, y:{current_y}"
         )
         X, Y = current_x, current_y
+
+
+# def mouse_click(x, y):
+#     pyautogui.click(x=x, y=y, interval=1)
 
 
 def start(seconds):
@@ -70,7 +81,7 @@ def lock_screen():
 
 
 if __name__ == "__main__":
-    p = Process(target=start, args=(180,))
+    p = Process(target=start, args=(10,))
     p.daemon = True
     p.start()
     lock_screen()
